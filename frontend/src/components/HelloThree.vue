@@ -25,8 +25,8 @@ export default {
 
     //Variablen für die Bewengung des Spielers werden gesetzt
     let movingFoward, movingBackward, movingLeft, movingRight = false
-    const slowMovementSpeed = 20
-    const fastMovementSpeed = 50
+    const slowMovementSpeed = 10
+    const fastMovementSpeed = 20
     let movementSpeed = slowMovementSpeed
 
     //Alle SFX werden hier geladen und gemutet unmute erfolgt im click eventlistener
@@ -232,7 +232,7 @@ export default {
     scene.add(pointLight, pointLightHelper, ambientLight, outerCube, innerCube, camera)
     scene.background = new THREE.TextureLoader().load(skybox)
 
-    function cameraPositionBewegen() {
+    function cameraPositionBewegen(delta) {
       let cameraViewDirection = new THREE.Vector3()
       camera.getWorldDirection(cameraViewDirection)
       const yPlaneVector = new THREE.Vector3(0, 1, 0)
@@ -241,36 +241,36 @@ export default {
           console.log("movingFoward")
           if (movingRight) {
             console.log("and movingRight")
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 7 * Math.PI / 4), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 7 * Math.PI / 4), movementSpeed * delta)
           } else if (movingLeft) {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI / 4), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI / 4), movementSpeed * delta)
           } else if (movingBackward) {
             //foward und backward canceln sich
           } else {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 2 * Math.PI), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 2 * Math.PI), movementSpeed * delta)
           }
         } else if (movingBackward) {
           if (movingRight) {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 5 * Math.PI / 4), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 5 * Math.PI / 4), movementSpeed * delta)
           } else if (movingLeft) {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 3 * Math.PI / 4), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 3 * Math.PI / 4), movementSpeed * delta)
           } else {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI), movementSpeed * delta)
           }
         } else if (movingRight) {
           if (movingLeft) {
             //right und left canceln sich
           } else {
-            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 3 * Math.PI / 2), movementSpeed * clock.getDelta())
+            camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, 3 * Math.PI / 2), movementSpeed * delta)
           }
         } else if (movingLeft) {
-          camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI / 2), movementSpeed * clock.getDelta())
+          camera.position.addScaledVector(cameraViewDirection.applyAxisAngle(yPlaneVector, Math.PI / 2), movementSpeed * delta)
         }
         camera.position.y = 2
       }
     }
 
-    function slimeBlockBounce() {
+    function slimeBlockBounce(delta) {
       const boundingBoxOuterCube = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
       boundingBoxOuterCube.setFromObject(outerCube)
 
@@ -288,7 +288,6 @@ export default {
         innerCube.position.y += 0.05 * directionY;
         sound[1].play()
       }
-      const delta = clock.getDelta()
 
       outerCube.position.x += 1 * delta * directionX;
       outerCube.position.y += 1 * delta * directionY;
@@ -306,16 +305,17 @@ export default {
     let directionX = 1;
     let directionY = 1;
     function animate() {
+      const delta = clock.getDelta()
       requestAnimationFrame(animate);
-      slimeBlockBounce();
-      cameraPositionBewegen();
+      slimeBlockBounce(delta);
+      cameraPositionBewegen(delta);
       renderer.render(scene, camera);
     }
     animate();
 
     function bodenGenerieren() {
-      const breite = 100;
-      const tiefe = 200;
+      const breite = 200;
+      const tiefe = 2;
 
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const texture = new THREE.TextureLoader().load(oakLog);
