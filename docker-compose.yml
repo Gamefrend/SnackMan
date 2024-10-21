@@ -1,0 +1,25 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend  # Pfad zum Backend Dockerfile
+    ports:
+      - "8080:8080"       # Mappe den Backend-Port 8080
+    networks:
+      - app-network
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend  # Pfad zum Frontend Dockerfile
+    ports:
+      - "5173:5173"        # Mappe den Frontend-Port 5173
+    networks:
+      - app-network
+    depends_on:
+      - backend            # Frontend ist abhängig vom Backend
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
