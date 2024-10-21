@@ -5,7 +5,6 @@
 <script setup>
 
 import * as THREE from 'three';
-import {FirstPersonControls} from 'three/addons/controls/FirstPersonControls.js';
 import {Howl} from 'howler';
 import slimeBlock from '@/assets/block/slime_block.png'
 import oakLog from '@/assets/block/oak_planks.png'
@@ -100,10 +99,10 @@ onMounted(() => {
   }
 
   const {scene, camera, renderer, pointerLockControls} = createSceneCameraRendererControlls()
+
   let clock = new THREE.Clock()
 
   threeContainer.value.appendChild(renderer.domElement);
-
 
   function registerListeners(window, renderer) {
     renderer.domElement.addEventListener('click', (e) => {
@@ -178,6 +177,7 @@ onMounted(() => {
   const deckenPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -4)
   const wandLinksPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), -5)
   const wandRechtsPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 5)
+
   const planeHelper = new THREE.PlaneHelper(bodenPlane, 10, 0xffffff)
   const planeHelper2 = new THREE.PlaneHelper(deckenPlane, 10, 0xffffff)
   const planeHelper3 = new THREE.PlaneHelper(wandRechtsPlane, 10, 0xffffff)
@@ -186,7 +186,7 @@ onMounted(() => {
 
   const modelLoader = new GLTFLoader()
 
-  function loadPlayerModelAt(x, y, z, rotation) {
+  function loadPlayerModelAt(x, y, z, rotation, modelLoader) {
     modelLoader.load("src/assets/3dModel/minecraft_-_steve/scene.gltf", (objekt) => {
       const model = objekt.scene
       model.scale.set(0.06, 0.06, 0.06)
@@ -196,8 +196,9 @@ onMounted(() => {
     })
   }
 
-  loadPlayerModelAt(-6, 1.5, 0, Math.PI / 2)
+  loadPlayerModelAt(-6, 1.5, 0, Math.PI / 2, modelLoader)
 
+  //Model hinter der Kamera
   modelLoader.load("src/assets/3dModel/minecraft_-_steve/scene.gltf", (objekt) => {
     const model = objekt.scene
     model.scale.set(0.06, 0.06, 0.06)
@@ -232,6 +233,8 @@ onMounted(() => {
   const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.1, 0xffffff)
 
   scene.add(pointLight, pointLightHelper, ambientLight, outerCube, innerCube, camera)
+  //plainhelper anzeiggen (mit Kommentar ein/aus schalten)
+  scene.add(planeHelper, planeHelper2, planeHelper3, planeHelper4)
   scene.background = new THREE.TextureLoader().load(skybox)
 
   function cameraPositionBewegen(delta) {
