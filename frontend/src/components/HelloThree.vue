@@ -234,7 +234,7 @@ onMounted(() => {
 
   scene.add(pointLight, pointLightHelper, ambientLight, outerCube, innerCube, camera)
   //plainhelper anzeiggen (mit Kommentar ein/aus schalten)
-  scene.add(planeHelper, planeHelper2, planeHelper3, planeHelper4)
+  //scene.add(planeHelper, planeHelper2, planeHelper3, planeHelper4)
   scene.background = new THREE.TextureLoader().load(skybox)
 
   function cameraPositionBewegen(delta) {
